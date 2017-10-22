@@ -14,11 +14,13 @@ def consumeGETRequests(_endpoint, _extras):
 def modifyUserData(_endpoint, _extras):
 	_params = {"accept": "application/json"}.items() + _extras.items()
 	print (_params)
-	# _header = _header_params
 	r = requests.put(url = BASE_URL+_endpoint, data = _params, headers = {"Authorization" : API_KEY})
 	data = r.json()
 	return data
 
+'''
+Output: An integer number
+'''
 def getLowestAskRate(_endpoint):
 	data = consumeGETRequests(_endpoint, dict())
 	if data['success']:
@@ -26,6 +28,9 @@ def getLowestAskRate(_endpoint):
 	else:
 		return -1
 
+'''
+Output: An integer number
+'''
 def getHighestBidRate(_endpoint):
 	data = consumeGETRequests(_endpoint, dict())
 	if data['success']:
@@ -33,6 +38,9 @@ def getHighestBidRate(_endpoint):
 	else:
 		return -1
 
+'''
+Output: An integer number
+'''
 def getMin24Hrs(_endpoint):
 	data = consumeGETRequests(_endpoint, dict())
 	if data['success']:
@@ -40,6 +48,9 @@ def getMin24Hrs(_endpoint):
 	else:
 		return -1
 
+'''
+Output: An integer number
+'''
 def getMax24Hrs(_endpoint):
 	data = consumeGETRequests(_endpoint, dict())
 	if data['success']:
@@ -47,6 +58,13 @@ def getMax24Hrs(_endpoint):
 	else:
 		return -1
 
+'''
+Output: JSON Array.
+Sample Output:
+[{u'vol': 1000000, u'rate': 37501000, u'ordType': u'ask', u'time': 1508679162490}, 
+{u'vol': 20000000, u'rate': 37500000, u'ordType': u'ask', u'time': 1508678719998}]
+
+'''
 def getPastTrades(_endpoint, _max):
 	data = consumeGETRequests(_endpoint, {'max': _max})
 	if data['success']:
@@ -68,13 +86,10 @@ def placeNewBuyOrder(_endpoint, _rate, _volume):
 	else:
 		return data
 
-
-
-
 # print(getLowestAskRate(_endpoint = "/exchange/ask/low"))
 # print(getHighestBidRate(_endpoint = "/exchange/bid/high"))
 # print(getMin24Hrs(_endpoint = "/exchange/min24Hr"))
 # print(getMax24Hrs(_endpoint = "/exchange/max24Hr"))
-# print (getPastTrades(_endpoint = "/exchange/trades", _MAX = 2))
+# print (getPastTrades(_endpoint = "/exchange/trades", _max = 2))
 # print(placeNewSellOrder(_endpoint = "/user/exchange/ask/new", _rate = 400000, _volume = 0.010))
 # print(placeNewSellOrder(_endpoint = "/user/exchange/bid/new", _rate = 300000, _volume = 0.010))
