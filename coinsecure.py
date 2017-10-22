@@ -3,9 +3,9 @@ import requests
 BASE_URL = "https://api.coinsecure.in/v1"
 UNIT_RUPEE = 100
 UNIT_BTC = 100000000
-API_KEY = "ENTER_YOUR_API_KET"
+API_KEY = "ENTER_YOUR_API_KEY"
 
-def getDataInJson(_endpoint, _extras):
+def consumeGETRequests(_endpoint, _extras):
 	_params = {"accept": "application/json"}.items() + _extras.items()
 	r = requests.get(url = BASE_URL+_endpoint, params = _params)
 	data = r.json()
@@ -20,35 +20,35 @@ def modifyUserData(_endpoint, _extras):
 	return data
 
 def getLowestAskRate(_endpoint):
-	data = getDataInJson(_endpoint, dict())
+	data = consumeGETRequests(_endpoint, dict())
 	if data['success']:
 		return data['message']['rate']
 	else:
 		return -1
 
 def getHighestBidRate(_endpoint):
-	data = getDataInJson(_endpoint, dict())
+	data = consumeGETRequests(_endpoint, dict())
 	if data['success']:
 		return data['message']['rate']
 	else:
 		return -1
 
 def getMin24Hrs(_endpoint):
-	data = getDataInJson(_endpoint, dict())
+	data = consumeGETRequests(_endpoint, dict())
 	if data['success']:
 		return data['message']['rate']
 	else:
 		return -1
 
 def getMax24Hrs(_endpoint):
-	data = getDataInJson(_endpoint, dict())
+	data = consumeGETRequests(_endpoint, dict())
 	if data['success']:
 		return data['message']['rate']
 	else:
 		return -1
 
 def getPastTrades(_endpoint, _max):
-	data = getDataInJson(_endpoint, {'max': _max})
+	data = consumeGETRequests(_endpoint, {'max': _max})
 	if data['success']:
 		return data['message']
 	else:
@@ -77,4 +77,4 @@ def placeNewBuyOrder(_endpoint, _rate, _volume):
 # print(getMax24Hrs(_endpoint = "/exchange/max24Hr"))
 # print (getPastTrades(_endpoint = "/exchange/trades", _MAX = 2))
 # print(placeNewSellOrder(_endpoint = "/user/exchange/ask/new", _rate = 400000, _volume = 0.010))
-print(placeNewSellOrder(_endpoint = "/user/exchange/bid/new", _rate = 300000, _volume = 0.010))
+# print(placeNewSellOrder(_endpoint = "/user/exchange/bid/new", _rate = 300000, _volume = 0.010))
