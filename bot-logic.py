@@ -20,27 +20,40 @@ Do we buy and sell at current rates or at a slightly modified rate?
 import coinsecure as cs
 import datetime
 
-minima = 0
-maxima = 99999999
+# 1 = increasing slope. -1 = decreasing slope.
+previous_ask_orders_slope = 0
+current_ask_orders_slope = 0
+previous_buy_orders_slope = 0
+current_buy_orders_slope = 0
+min_diff_in_slope = 500
+min_dist_from_minmax = 1000
+min_diff_bw_buysell = 2500
+previous_maxima = 99999999
+previous_minima = 0
 
-ask_orders_slope = []
-buy_orders_slope = []
-while True:
-	lowest = cs.getLowestAskRate(_endpoint = "/exchange/ask/low")
-	highest = cs.getHighestBidRate(_endpoint = "/exchange/bid/high")
-	min24 = cs.getMin24Hrs(_endpoint = "/exchange/min24Hr")
-	max24 = cs.getMax24Hrs(_endpoint = "/exchange/max24Hr")
-	ask_orders = cs.getAskOrders(_endpoint = "/exchange/ask/orders", _max = 10)
-	bid_orders = cs.getBidOrders(_endpoint = "/exchange/bid/orders", _max = 10)
-	# If you want to buy, consider these slopes
-	previous = ask_orders[0]
-	for x in ask_orders:
-		ask_orders_slope.append((previous['rate'] - x['rate'])/float(previous['time'] - x['time']))
-		previous = x
-	# If you want to sell, consider these slopes
-	previous = buy_orders[0]
-	for x in buy_orders:
-		buy_orders_slope.append((previous['rate'] - x['rate'])/float(previous['time'] - x['time']))
-		previous = x
+# minima = cs.getMin24Hrs(_endpoint = "/exchange/min24Hr")
+# maxima = cs.getMax24Hrs(_endpoint = "/exchange/max24Hr")
 
-
+# while True:
+# lowest = cs.getLowestAskRate(_endpoint = "/exchange/ask/low")
+# highest = cs.getHighestBidRate(_endpoint = "/exchange/bid/high")
+# min24 = cs.getMin24Hrs(_endpoint = "/exchange/min24Hr")
+# max24 = cs.getMax24Hrs(_endpoint = "/exchange/max24Hr")
+ask_orders = cs.getAskOrders(_endpoint = "/exchange/ask/orders", _max = 10)
+bid_orders = cs.getBidOrders(_endpoint = "/exchange/bid/orders", _max = 10)
+# If you want to buy, consider this
+for x in ask_orders:
+	difference_in_rates = previous['rate'] - x['rate']
+	if difference_in_rates > min_diff_in_slope:
+		if previous_ask_orders_slope == -1 and difference_in_rates > min_dist_from_minmax:
+			
+		previous_ask_orders_slope = current_ask_orders_slope
+		current_ask_orders_slope = 1
+	elif x['rate'] - previous['rate'] > min_diff_in_slope:
+		ask_orders_slope = -1
+# If you want to sell, consider this
+# previous = buy_orders[0]
+# for x in buy_orders:
+# 	buy_orders_slope.append((previous['rate'] - x['rate'])/float(previous['time'] - x['time']))
+# 	previous = x
+print(ask_orders_slope)
