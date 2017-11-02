@@ -89,6 +89,7 @@ def placeNewSellOrder(_endpoint, _rate, _volume):
 		return data
 
 '''
+BUY ORDERS
 [{u'vol': 9800000, u'rate': 38450000}, {u'vol': 40100000, u'rate': 38490000}, {u'vol': 570500000, u'rate': 38500000}]
 '''    
 def getBidOrders(_endpoint, _max):
@@ -99,7 +100,9 @@ def getBidOrders(_endpoint, _max):
 		return -1;
 
 '''
+SELL ORDERS
 [{u'vol': 1000000, u'rate': 38270001}, {u'vol': 1300000, u'rate': 38270000}, {u'vol': 13500000, u'rate': 38267200}]
+
 '''    
 def getAskOrders(_endpoint, _max):
 	data = consumeGETRequests(_endpoint, {'max': _max})
@@ -122,5 +125,5 @@ def placeNewBuyOrder(_endpoint, _rate, _volume):
 # print (getPastTrades(_endpoint = "/exchange/trades", _max = 10))
 # print(placeNewSellOrder(_endpoint = "/user/exchange/ask/new", _rate = 400000, _volume = 0.010))
 # print(placeNewSellOrder(_endpoint = "/user/exchange/bid/new", _rate = 300000, _volume = 0.010))
-# print (getAskOrders(_endpoint = "/exchange/ask/orders", _max = 3))
+# print (getAskOrders(_endpoint = "/exchange/ask/orders", _max = 5))
 # print (getBidOrders(_endpoint = "/exchange/bid/orders", _max = 3))

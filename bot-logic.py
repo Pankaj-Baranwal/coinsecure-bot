@@ -41,22 +41,22 @@ previous_bid_rate = 0
 # max24 = cs.getMax24Hrs(_endpoint = "/exchange/max24Hr")
 
 
-ask_orders = cs.getAskOrders(_endpoint = "/exchange/ask/orders", _max = 1)
-bid_orders = cs.getBidOrders(_endpoint = "/exchange/bid/orders", _max = 1)
+latest_ask_order = cs.getAskOrders(_endpoint = "/exchange/ask/orders", _max = 1)
+latest_bid_order = cs.getBidOrders(_endpoint = "/exchange/bid/orders", _max = 1)
 # If you want to buy, consider this
-difference_in_rates = x[0]['rate'] - previous_ask_rate['rate']
+difference_in_rates = latest_ask_order[0]['rate'] - previous_ask_rate['rate']
 if ask_orders_slope == -1 and difference_in_rates > min_dist_from_minmax:
 	previous_minima = previous_ask_rate['rate']
 	# CHECK IF WE HAVE MONEY, IF YES: PLACE BUY ORDER
 	ask_orders_slope = 1
 if difference_in_rates > min_diff_in_slope:
-	previous_ask_rate = x[0]['rate']
+	previous_ask_rate = latest_ask_order[0]['rate']
 
 # If you want to sell, consider this
-difference_in_rates = previous_bid_rate['rate'] - x[0]['rate']
+difference_in_rates = previous_bid_rate['rate'] - latest_bid_order[0]['rate']
 if bid_orders_slope == 1 and difference_in_rates > min_dist_from_minmax:
 	previous_maxima = previous_bid_rate['rate']
-	# PLACE SELL ORDER
+	# CHECK IF WE HAVE BTC, IF YES: PLACE SELL ORDER
 	bid_orders_slope = -1
 if difference_in_rates > min_diff_in_slope:
-	previous_bid_rate = x[0]['rate']
+	previous_bid_rate = latest_bid_order[0]['rate']
