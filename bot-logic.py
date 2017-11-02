@@ -21,15 +21,15 @@ import coinsecure as cs
 import datetime
 
 # 1 = increasing slope. -1 = decreasing slope.
-previous_ask_orders_slope = 0
-current_ask_orders_slope = 0
-previous_buy_orders_slope = 0
-current_buy_orders_slope = 0
+ask_orders_slope = 0
+bid_orders_slope = 0
 min_diff_in_slope = 500
 min_dist_from_minmax = 1000
 min_diff_bw_buysell = 2500
 previous_maxima = 99999999
 previous_minima = 0
+previous_ask_rate = 0
+previous_bid_rate = 0
 
 # minima = cs.getMin24Hrs(_endpoint = "/exchange/min24Hr")
 # maxima = cs.getMax24Hrs(_endpoint = "/exchange/max24Hr")
@@ -39,21 +39,24 @@ previous_minima = 0
 # highest = cs.getHighestBidRate(_endpoint = "/exchange/bid/high")
 # min24 = cs.getMin24Hrs(_endpoint = "/exchange/min24Hr")
 # max24 = cs.getMax24Hrs(_endpoint = "/exchange/max24Hr")
-ask_orders = cs.getAskOrders(_endpoint = "/exchange/ask/orders", _max = 10)
-bid_orders = cs.getBidOrders(_endpoint = "/exchange/bid/orders", _max = 10)
+
+
+ask_orders = cs.getAskOrders(_endpoint = "/exchange/ask/orders", _max = 1)
+bid_orders = cs.getBidOrders(_endpoint = "/exchange/bid/orders", _max = 1)
 # If you want to buy, consider this
-for x in ask_orders:
-	difference_in_rates = previous['rate'] - x['rate']
-	if difference_in_rates > min_diff_in_slope:
-		if previous_ask_orders_slope == -1 and difference_in_rates > min_dist_from_minmax:
-			
-		previous_ask_orders_slope = current_ask_orders_slope
-		current_ask_orders_slope = 1
-	elif x['rate'] - previous['rate'] > min_diff_in_slope:
-		ask_orders_slope = -1
+difference_in_rates = x[0]['rate'] - previous_ask_rate['rate']
+if ask_orders_slope == -1 and difference_in_rates > min_dist_from_minmax:
+	previous_minima = previous_ask_rate['rate']
+	# CHECK IF WE HAVE MONEY, IF YES: PLACE BUY ORDER
+	ask_orders_slope = 1
+if difference_in_rates > min_diff_in_slope:
+	previous_ask_rate = x[0]['rate']
+
 # If you want to sell, consider this
-# previous = buy_orders[0]
-# for x in buy_orders:
-# 	buy_orders_slope.append((previous['rate'] - x['rate'])/float(previous['time'] - x['time']))
-# 	previous = x
-print(ask_orders_slope)
+difference_in_rates = previous_bid_rate['rate'] - x[0]['rate']
+if bid_orders_slope == 1 and difference_in_rates > min_dist_from_minmax:
+	previous_maxima = previous_bid_rate['rate']
+	# PLACE SELL ORDER
+	bid_orders_slope = -1
+if difference_in_rates > min_diff_in_slope:
+	previous_bid_rate = x[0]['rate']
