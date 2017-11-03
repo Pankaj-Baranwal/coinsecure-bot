@@ -50,11 +50,19 @@ previous_bid_rate = 0
 
 latest_ask_order = cs.getAskOrders(_endpoint = "/exchange/ask/orders", _max = 1)
 latest_bid_order = cs.getBidOrders(_endpoint = "/exchange/bid/orders", _max = 1)
+
+# In case some query failed to get executed
+if latest_ask_order == -1 or latest_bid_order == -1:
+	continue
+
 # If you want to buy, consider this
 difference_in_rates = latest_ask_order[0]['rate'] - previous_ask_rate['rate']
 if ask_orders_slope == -1 and difference_in_rates > min_dist_from_minmax:
-	previous_minima = previous_ask_rate['rate']
 	# CHECK IF WE HAVE MONEY, IF YES: PLACE BUY ORDER
+	inr_balance = cs.getUserINRBalance(_endpoint = "/user/exchange/bank/fiat/balance/available")
+	if inr_balance > latest_ask_order[0]['rate']*0.001:
+		if len(cs.getExistingBuyOrder(_endpoint = "/user/exchange/ask/pending")) == 0:
+			cs.placeNewBuyOrder(_endpoint = "/user/exchange/bid/new", _rate = latest_ask_order[0]['rate'], _volume = money_to_spend)
 	ask_orders_slope = 1
 if difference_in_rates > min_diff_in_slope:
 	previous_ask_rate = latest_ask_order[0]['rate']
@@ -62,8 +70,11 @@ if difference_in_rates > min_diff_in_slope:
 # If you want to sell, consider this
 difference_in_rates = previous_bid_rate['rate'] - latest_bid_order[0]['rate']
 if bid_orders_slope == 1 and difference_in_rates > min_dist_from_minmax:
-	previous_maxima = previous_bid_rate['rate']
 	# CHECK IF WE HAVE BTC, IF YES: PLACE SELL ORDER
+	btc_balance = cs.getUserBTCBalance(_endpoint = "/user/exchange/bank/coin/balance/available")
+	if btc_balance > 0.001:
+		if len(cs.getExistingSellOrder(_endpoint = "/user/exchange/bid/pending")) == 0:
+			cs.placeNewSellOrder(_endpoint = "/user/exchange/ask/new", _rate = latest_bid_order, _volume = vol_to_sell)
 	bid_orders_slope = -1
 if difference_in_rates > min_diff_in_slope:
 	previous_bid_rate = latest_bid_order[0]['rate']
