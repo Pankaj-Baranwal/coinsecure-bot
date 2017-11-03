@@ -21,13 +21,20 @@ import coinsecure as cs
 import datetime
 
 # 1 = increasing slope. -1 = decreasing slope.
+# Slope calculated by (current - previous) rate. = 1 if increasing. = -1 if decreasing
 ask_orders_slope = 0
 bid_orders_slope = 0
+
+# Threshold difference in (current - previous) rate for which all values will be updated
 min_diff_in_slope = 500
+# Threshold distance from peaks and troughs to consider for buy or sell
 min_dist_from_minmax = 1000
+# Threshold difference between a buy and a corresponding sell to ensure break-even
 min_diff_bw_buysell = 2500
+
 previous_maxima = 99999999
 previous_minima = 0
+
 previous_ask_rate = 0
 previous_bid_rate = 0
 
