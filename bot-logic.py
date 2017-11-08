@@ -45,7 +45,6 @@ previous_buy_rate = 0
 
 counter = 0
 while True:
-
 	latest_ask_rate = cs.getAskOrders(_max = 1)
 	latest_bid_rate = cs.getBidOrders(_max = 1)
 
@@ -57,7 +56,10 @@ while True:
 	
 	previous_ask_rate = latest_ask_rate[0]['rate']*0.01
 	previous_bid_rate = latest_bid_rate[0]['rate']*0.01
+	break
+
 count_placed_orders = 0
+print ("MOVING TO ITERATIVE CODE")
 while True:
 	print ('\n\n')
 	counter = counter + 1
