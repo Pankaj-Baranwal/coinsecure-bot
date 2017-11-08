@@ -33,7 +33,7 @@ print (bid_orders_slope)
 min_dist_from_minmax = 800
 min_diff_in_slope = 400
 min_diff_bw_buysell = 3500
-vol_to_spend = 8000
+vol_to_spend = 0.02
 
 previous_ask_rate = 0
 previous_bid_rate = 0
@@ -55,9 +55,8 @@ while True:
 		sleep(5)
 		continue
 	
-	previous_ask_rate = latest_ask_rate[0]['rate']
-	previous_bid_rate = latest_bid_rate[0]['rate']
-	break
+	previous_ask_rate = latest_ask_rate[0]['rate']*0.01
+	previous_bid_rate = latest_bid_rate[0]['rate']*0.01
 count_placed_orders = 0
 while True:
 	print ('\n\n')
@@ -72,8 +71,8 @@ while True:
 		sleep(5)
 		continue
 
-	latest_ask_rate = latest_ask_rate[0]['rate']
-	latest_bid_rate = latest_bid_rate[0]['rate']
+	latest_ask_rate = latest_ask_rate[0]['rate']*0.01
+	latest_bid_rate = latest_bid_rate[0]['rate']*0.01
 
 	print("PREVIOUS ASK RATE = " + str(previous_ask_rate))
 	print("LATEST ASK RATE = " + str(latest_ask_rate))
@@ -83,6 +82,8 @@ while True:
 	if ask_orders_slope == -1 and latest_ask_rate - local_minima > min_dist_from_minmax:
 		# CHECK IF WE HAVE MONEY, IF YES: PLACE BUY ORDER
 		inr_balance = cs.getUserINRBalance()
+		print('')
+		print ("INR BALANCE: " + str(inr_balance))
 		if inr_balance > latest_ask_rate*0.001:
 			if len(cs.getExistingBuyOrder()) == 0:
 				print ("---------x---------x--------")
@@ -108,7 +109,7 @@ while True:
 	if bid_orders_slope == 1 and local_maxima - latest_bid_rate > min_dist_from_minmax:
 		# CHECK IF WE HAVE BTC, IF YES: PLACE SELL ORDER
 		btc_balance = cs.getUserBTCBalance()
-		if btc_balance > 0.001 and previous_buy_rate - latest_bid_rate > min_diff_bw_buysell:
+		if btc_balance > 0.01 and previous_buy_rate - latest_bid_rate > min_diff_bw_buysell:
 			if len(cs.getExistingSellOrder()) == 0:
 				print ("---------x---------x--------")
 				print ("READY TO PLACE SELL ORDER AT RATE = " + str(latest_bid_rate))

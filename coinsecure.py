@@ -14,6 +14,11 @@ def consumeGETRequests(_endpoint, _extras):
 		data = r.json()
 		if data['success']:
 			return data['message']
+	else:
+		data = r.json()
+		print(data['message'])
+		return -1
+	print (r.text)
 	return -1
 
 def consumeUserGETRequests(_endpoint, _extras):
@@ -28,6 +33,11 @@ def consumeUserGETRequests(_endpoint, _extras):
 		data = r.json()
 		if data['success']:
 			return data['message']
+	else:
+		data = r.json()
+		print(data['message'])
+		return -1
+	print (r.text)
 	return -1
 
 def modifyUserData(_endpoint, _extras):
@@ -42,6 +52,11 @@ def modifyUserData(_endpoint, _extras):
 		data = r.json()
 		if data['success']:
 			return data['message']
+	else:
+		data = r.json()
+		print(data['message'])
+		return -1
+	print (r.text)
 	return -1
 '''
 Output: An integer number
@@ -131,8 +146,8 @@ def getUserINRBalance():
 
 def getUserBTCBalance():
 	data = consumeUserGETRequests(ENDPOINT_USER_BTC_BALANCE, dict())
-	if data['success']:
-		return data['message']['vol']/UNIT_BTC
+	if data != -1:
+		return data['vol']/UNIT_BTC
 	return -1
 
 # print(getLowestAskRate())
@@ -142,8 +157,8 @@ def getUserBTCBalance():
 # print (getPastTrades(_max = 10))
 # print(placeNewSellOrder(_rate = 400000, _volume = 0.010))
 # print(placeNewBuyOrder(_rate = 300000, _volume = 0.010))
-# print (getAskOrders(_max = 5))
-# print (getBidOrders(_max = 3))
+print (getAskOrders(_max = 5))
+print (getBidOrders(_max = 3))
 # print (getExistingBuyOrders(_max = 1))
 # print (getExistingSellOrders(_max = 1))
 # print (getUserINRBalance())
