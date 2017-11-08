@@ -65,13 +65,14 @@ while True:
 	latest_ask_rate = cs.getAskOrders(_max = 1)
 	latest_bid_rate = cs.getBidOrders(_max = 1)
 
-	latest_ask_rate = latest_ask_rate[0]['rate']
-	latest_bid_rate = latest_bid_rate[0]['rate']
-
 	# In case some query failed to get executed
 	if latest_ask_rate == -1 or latest_bid_rate == -1:
+		print ("FAILED TO RUN API")
 		sleep(5)
 		continue
+
+	latest_ask_rate = latest_ask_rate[0]['rate']
+	latest_bid_rate = latest_bid_rate[0]['rate']
 
 	print("PREVIOUS ASK RATE = " + str(previous_ask_rate))
 	print("LATEST ASK RATE = " + str(latest_ask_rate))
