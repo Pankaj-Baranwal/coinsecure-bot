@@ -135,8 +135,8 @@ def getUserBTCBalance():
 		return data['message']['vol']/UNIT_BTC
 	return -1
 
-# print(getLowestAskRate())
-# print(getHighestBidRate())
+print(getLowestAskRate())
+print(getHighestBidRate())
 # print(getMin24Hrs())
 # print(getMax24Hrs())
 # print (getPastTrades(_max = 10))
