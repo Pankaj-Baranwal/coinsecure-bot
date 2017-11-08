@@ -90,10 +90,13 @@ while True:
 				local_maxima = previous_ask_rate
 				previous_buy_rate = latest_ask_rate
 				print ("---------x---------x--------")
-		ask_orders_slope = 1
 	difference_in_rates = latest_ask_rate - previous_ask_rate
 	if difference_in_rates > min_diff_in_slope:
 		previous_ask_rate = latest_ask_rate
+		ask_orders_slope = 1
+	elif difference_in_rates < -min_diff_in_slope:
+		previous_ask_rate = latest_ask_rate
+		ask_orders_slope = -1
 
 	print("PREVIOUS BID RATE = " + str(previous_bid_rate))
 	print("LATEST BID RATE = " + str(latest_bid_rate))
@@ -110,8 +113,11 @@ while True:
 				print(cs.placeNewSellOrder(_rate = latest_bid_rate, _volume = vol_to_spend))
 				print ("---------x---------x--------")
 				local_minima = previous_bid_rate
-		bid_orders_slope = -1
 	difference_in_rates = previous_bid_rate - latest_bid_rate
 	if difference_in_rates > min_diff_in_slope:
 		previous_bid_rate = latest_bid_rate
+		bid_orders_slope = -1
+	elif difference_in_rates < -min_diff_in_slope:
+		previous_bid_rate = latest_bid_rate
+		bid_orders_slope = 1
 	sleep(5)
