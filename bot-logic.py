@@ -58,8 +58,9 @@ while True:
 	previous_ask_rate = latest_ask_rate[0]['rate']
 	previous_bid_rate = latest_bid_rate[0]['rate']
 	break
-
+count_placed_orders = 0
 while True:
+	print ('\n\n')
 	counter = counter + 1
 	print ("Iteration #" + str(counter))
 	latest_ask_rate = cs.getAskOrders(_max = 1)
@@ -87,6 +88,7 @@ while True:
 				print ("---------x---------x--------")
 				print ("READY TO PLACE BUY ORDER AT RATE = " + str(latest_ask_rate))
 				print(cs.placeNewBuyOrder(_rate = latest_ask_rate, _volume = vol_to_spend))
+				count_placed_orders = count_placed_orders + 1
 				local_maxima = previous_ask_rate
 				previous_buy_rate = latest_ask_rate
 				print ("---------x---------x--------")
@@ -111,8 +113,10 @@ while True:
 				print ("---------x---------x--------")
 				print ("READY TO PLACE SELL ORDER AT RATE = " + str(latest_bid_rate))
 				print(cs.placeNewSellOrder(_rate = latest_bid_rate, _volume = vol_to_spend))
+				count_placed_orders = count_placed_orders + 1
 				print ("---------x---------x--------")
 				local_minima = previous_bid_rate
+	print ('Placed ORDERS = ' + str(count_placed_orders))
 	difference_in_rates = previous_bid_rate - latest_bid_rate
 	if difference_in_rates > min_diff_in_slope:
 		previous_bid_rate = latest_bid_rate
