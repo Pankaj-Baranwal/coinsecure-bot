@@ -6,47 +6,59 @@ def consumeGETRequests(_endpoint, _extras):
 	_params = {"accept": "application/json"}.items() + _extras.items()
 	try:
 		r = requests.get(url = BASE_URL+_endpoint, params = _params)
-	except requests.exceptions.ConnectionError:
-		print("Connection refused")
-		return -404
-	data = r.json()
-	return data
+	except requests.exceptions.RequestException as e:
+		print("ERROR")
+		print (e)
+		return -1
+	if r.status_code == 200:
+		data = r.json()
+		if data['success']:
+			return data['message']
+	return -1
 
 def consumeUserGETRequests(_endpoint, _extras):
 	_params = {"accept": "application/json"}.items() + _extras.items()
 	try:
 		r = requests.get(url = BASE_URL+_endpoint, params = _params, headers = {"Authorization" : API_KEY})
-	except requests.exceptions.ConnectionError:
-		print("Connection refused")
-		return -404
-	data = r.json()
-	return data
+	except requests.exceptions.RequestException as e:
+		print("ERROR")
+		print (e)
+		return -1
+	if r.status_code == 200:
+		data = r.json()
+		if data['success']:
+			return data['message']
+	return -1
 
 def modifyUserData(_endpoint, _extras):
 	_params = {"accept": "application/json"}.items() + _extras.items()
 	try:
 		r = requests.put(url = BASE_URL+_endpoint, data = _params, headers = {"Authorization" : API_KEY})
-	except requests.exceptions.ConnectionError:
-		print("Connection refused")
-		return -404
-	data = r.json()
-	return data
+	except requests.exceptions.RequestException as e:
+		print("ERROR")
+		print (e)
+		return -1
+	if r.status_code == 200:
+		data = r.json()
+		if data['success']:
+			return data['message']
+	return -1
 '''
 Output: An integer number
 '''
 def getLowestAskRate():
 	data = consumeGETRequests(ENDPOINT_LOWEST_ASK_RATE, dict())
-	if data['success']:
-		return data['message']['rate']
-	return -1
+	if data != -1:
+		return data['rate']
+	return data
 
 '''
 Output: An integer number
 '''
 def getHighestBidRate():
 	data = consumeGETRequests(ENDPOINT_HIGHEST_BID_RATE, dict())
-	if data['success']:
-		return data['message']['rate']
+	if data != -1:
+		return data['rate']
 	return -1
 
 '''
@@ -54,8 +66,8 @@ Output: An integer number
 '''
 def getMin24Hrs():
 	data = consumeGETRequests(ENDPOINT_MIN24_HRS, dict())
-	if data['success']:
-		return data['message']['rate']
+	if data != -1:
+		return data['rate']
 	return -1
 
 '''
@@ -63,8 +75,8 @@ Output: An integer number
 '''
 def getMax24Hrs():
 	data = consumeGETRequests(ENDPOINT_MAX24_HRS, dict())
-	if data['success']:
-		return data['message']['rate']
+	if data != -1:
+		return data['rate']
 	return -1
 
 '''
@@ -75,20 +87,15 @@ Sample Output:
 
 '''
 def getPastTrades(_max):
-	data = consumeGETRequests(ENDPOINT_PAST_TRADES, {'max': _max})
-	if data['success']:
-		return data['message']
-	return -1
+	return consumeGETRequests(ENDPOINT_PAST_TRADES, {'max': _max})
+	
 
 '''
 BUY ORDERS
 [{u'vol': 9800000, u'rate': 38450000}, {u'vol': 40100000, u'rate': 38490000}, {u'vol': 570500000, u'rate': 38500000}]
 '''    
 def getBidOrders(_max):
-	data = consumeGETRequests(ENDPOINT_BID_ORDERS, {'max': _max})
-	if (data['success']):
-		return data['message']
-	return -1;
+	return consumeGETRequests(ENDPOINT_BID_ORDERS, {'max': _max})
 
 '''
 SELL ORDERS
@@ -96,39 +103,30 @@ SELL ORDERS
 
 '''    
 def getAskOrders(_max):
-	data = consumeGETRequests(ENDPOINT_ASK_ORDERS, {'max': _max})
-	if (data['success']):
-		return data['message']
-	return -1;
+	return consumeGETRequests(ENDPOINT_ASK_ORDERS, {'max': _max})
 
 def placeNewSellOrder(_rate, _volume):
 	data = modifyUserData(ENDPOINT_PLACE_NEW_SELL_ORDER, {"rate" : _rate * UNIT_RUPEE, "vol" : int(_volume * UNIT_BTC)})
-	if data['success']:
+	if data != -1:
 		return 1
 	return data
 
 def placeNewBuyOrder(_rate, _volume):
 	data = modifyUserData(ENDPOINT_PLACE_NEW_BUY_ORDER, {"rate" : _rate * UNIT_RUPEE, "vol" : int(_volume * UNIT_BTC)})
-	if (data['success']):
+	if data != -1:
 		return 1
 	return data
 
 def getExistingBuyOrders(_max):
-	data = consumeUserGETRequests(ENDPOINT_USER_PENDING_BUY_ORDERS, {'max': _max})
-	if (data['success']):
-		return data['message']
-	return -1
+	return consumeUserGETRequests(ENDPOINT_USER_PENDING_BUY_ORDERS, {'max': _max})
 
 def getExistingSellOrders(_max):
-	data = consumeUserGETRequests(ENDPOINT_USER_PENDING_SELL_ORDERS, {'max': _max})
-	if (data['success']):
-		return data['message']
-	return -1
+	return consumeUserGETRequests(ENDPOINT_USER_PENDING_SELL_ORDERS, {'max': _max})
 
 def getUserINRBalance():
 	data = consumeUserGETRequests(ENDPOINT_USER_INR_BALANCE, dict())
-	if data['success']:
-		return data['message']['rate']/UNIT_RUPEE
+	if data != -1:
+		return data['rate']/UNIT_RUPEE
 	return -1
 
 def getUserBTCBalance():

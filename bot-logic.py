@@ -29,36 +29,54 @@ bid_orders_slope = 0
 previous_ask_rate = 0
 previous_bid_rate = 0
 
+int counter = 0
 while True:
-	latest_ask_order = cs.getAskOrders(_max = 1)
-	latest_bid_order = cs.getBidOrders(_max = 1)
+	counter = counter + 1
+	print ("Iteration #" + str(counter))
+
+	latest_ask_rate = cs.getAskOrders(_max = 1)
+	latest_bid_rate = cs.getBidOrders(_max = 1)
 
 	# In case some query failed to get executed
-	if latest_ask_order == -1 or latest_bid_order == -1:
+	if latest_ask_rate == -1 or latest_bid_rate == -1:
+		print ("FAILED TO RUN API")
 		sleep(5)
 		continue
 
+	print("PREVIOUS ASK RATE = " + str(previous_ask_rate))
+	print("LATEST ASK RATE = " + str(latest_ask_rate[0]['rate']))
+	print("ASK ORDER SLOPE = " + str(ask_orders_slope))
+
 	# If you want to buy, consider this
-	difference_in_rates = latest_ask_order[0]['rate'] - previous_ask_rate['rate']
+	difference_in_rates = latest_ask_rate[0]['rate'] - previous_ask_rate['rate']
 	if ask_orders_slope == -1 and difference_in_rates > min_dist_from_minmax:
 		# CHECK IF WE HAVE MONEY, IF YES: PLACE BUY ORDER
 		inr_balance = cs.getUserINRBalance()
-		if inr_balance > latest_ask_order[0]['rate']*0.001:
+		if inr_balance > latest_ask_rate[0]['rate']*0.001:
 			if len(cs.getExistingBuyOrder()) == 0:
-				cs.placeNewBuyOrder(_rate = latest_ask_order[0]['rate'], _volume = money_to_spend)
+				print ("---------x---------x--------")
+				print ("READY TO PLACE BUY ORDER AT RATE = " + str(latest_ask_rate[0]['rate']))
+				print(cs.placeNewBuyOrder(_rate = latest_ask_rate[0]['rate'], _volume = vol_to_spend))
+				print ("---------x---------x--------")
 		ask_orders_slope = 1
 	if difference_in_rates > min_diff_in_slope:
-		previous_ask_rate = latest_ask_order[0]['rate']
+		previous_ask_rate = latest_ask_rate[0]['rate']
+
+	print("PREVIOUS BID RATE = " + str(previous_bid_rate))
+	print("LATEST BID RATE = " + str(latest_bid_rate[0]['rate']))
+	print("BID ORDER SLOPE = " + str(bid_orders_slope))
 
 	# If you want to sell, consider this
-	difference_in_rates = previous_bid_rate['rate'] - latest_bid_order[0]['rate']
-	if bid_orders_slope == 1 and difference_in_rates > min_dist_from_minmax:
+	difference_in_rates = previous_bid_rate['rate'] - latest_bid_rate[0]['rate']
+	if bid_orders_slope == 1 and difference_in_rates > min_dist_from_minmax and :
 		# CHECK IF WE HAVE BTC, IF YES: PLACE SELL ORDER
 		btc_balance = cs.getUserBTCBalance()
 		if btc_balance > 0.001:
 			if len(cs.getExistingSellOrder()) == 0:
-				cs.placeNewSellOrder(_rate = latest_bid_order, _volume = vol_to_sell)
+				print ("---------x---------x--------")
+				print ("READY TO PLACE SELL ORDER AT RATE = " + str(latest_bid_rate[0]['rate']))
+				cs.placeNewSellOrder(_rate = latest_bid_rate[0]['rate'], _volume = vol_to_spend)
 		bid_orders_slope = -1
 	if difference_in_rates > min_diff_in_slope:
-		previous_bid_rate = latest_bid_order[0]['rate']
+		previous_bid_rate = latest_bid_rate[0]['rate']
 	sleep(5)
