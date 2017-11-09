@@ -64,7 +64,7 @@ Output: An integer number
 def getLowestAskRate():
 	data = consumeGETRequests(ENDPOINT_LOWEST_ASK_RATE, dict())
 	if data != -1:
-		return data['rate']
+		return data['rate']/UNIT_RUPEE
 	return data
 
 '''
@@ -73,7 +73,7 @@ Output: An integer number
 def getHighestBidRate():
 	data = consumeGETRequests(ENDPOINT_HIGHEST_BID_RATE, dict())
 	if data != -1:
-		return data['rate']
+		return data['rate']/UNIT_RUPEE
 	return -1
 
 '''
@@ -82,7 +82,7 @@ Output: An integer number
 def getMin24Hrs():
 	data = consumeGETRequests(ENDPOINT_MIN24_HRS, dict())
 	if data != -1:
-		return data['rate']
+		return data['rate']/UNIT_RUPEE
 	return -1
 
 '''
@@ -91,7 +91,7 @@ Output: An integer number
 def getMax24Hrs():
 	data = consumeGETRequests(ENDPOINT_MAX24_HRS, dict())
 	if data != -1:
-		return data['rate']
+		return data['rate']/UNIT_RUPEE
 	return -1
 
 '''
@@ -121,13 +121,13 @@ def getAskOrders(_max):
 	return consumeGETRequests(ENDPOINT_ASK_ORDERS, {'max': _max})
 
 def placeNewSellOrder(_rate, _volume):
-	data = modifyUserData(ENDPOINT_PLACE_NEW_SELL_ORDER, {"rate" : _rate * UNIT_RUPEE, "vol" : int(_volume * UNIT_BTC)})
+	data = modifyUserData(ENDPOINT_PLACE_NEW_SELL_ORDER, {"rate" : int(_rate * UNIT_RUPEE), "vol" : int(_volume * UNIT_BTC)})
 	if data != -1:
 		return 1
 	return data
 
 def placeNewBuyOrder(_rate, _volume):
-	data = modifyUserData(ENDPOINT_PLACE_NEW_BUY_ORDER, {"rate" : _rate * UNIT_RUPEE, "vol" : int(_volume * UNIT_BTC)})
+	data = modifyUserData(ENDPOINT_PLACE_NEW_BUY_ORDER, {"rate" : int(_rate * UNIT_RUPEE), "vol" : int(_volume * UNIT_BTC)})
 	if data != -1:
 		return 1
 	return data
@@ -154,7 +154,7 @@ def getUserBTCBalance():
 # print(getHighestBidRate())
 # print(getMin24Hrs())
 # print(getMax24Hrs())
-# print (getPastTrades(_max = 10))
+# print (getPastTrades(_max = 20))
 # print(placeNewSellOrder(_rate = 400000, _volume = 0.010))
 # print(placeNewBuyOrder(_rate = 300000, _volume = 0.010))
 # print (getAskOrders(_max = 5))
