@@ -34,7 +34,6 @@ threshold_for_stability = 300 # Minimum recognizable difference between two cons
 volume_to_spend = 0.018 # Amount of BTC to spend in one transaction
 count_trades = 0 # How many trades has bot successfully done
 checkFor = sys.argv[1] # -1 if we need minima next, 1 if we need a maxima next
-print (checkFor)
 if checkFor == 1:
 	previous_buy_rate = sys.argv[2] # previous rate at which we placed a buy order
 else:
