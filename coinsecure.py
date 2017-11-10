@@ -1,6 +1,7 @@
 import json
 import requests
 from Constants import *
+from time import sleep
 
 def consumeGETRequests(_endpoint, _extras):
 	_params = {"accept": "application/json"}.items() + _extras.items()

@@ -31,8 +31,11 @@ list_of_peaks = [] #Stores previously encountered maximas and minimas
 threshold_for_stability = 300 # Minimum recognizable difference between two consecutive trades
 volume_to_spend = 0.022 # Amount of BTC to spend in one transaction
 count_trades = 0 # How many trades has bot successfully done
-checkFor = -1 # -1 if we need minima next, 1 if we need a maxima next
-previous_buy_rate = 0 # previous rate at which we placed a buy order
+checkFor = sys.argv[1] # -1 if we need minima next, 1 if we need a maxima next
+if checkFor == 1:
+	previous_buy_rate = sys.argv[2] # previous rate at which we placed a buy order
+else:
+	previous_buy_rate = 0 # previous rate at which we placed a buy order
 threshold_for_profit = 3500 # Minimum difference between buy and corresponding sell
 counter = 0 # Number of iterations
 
