@@ -3,6 +3,7 @@ import datetime
 from time import sleep
 import sys
 import numpy as np
+import tg
 
 sys.stdout.flush()
 
@@ -66,6 +67,7 @@ def place_ask_order():
 		count_trades = count_trades + 1
 		checkFor = 1
 		print ('SUCESSFULLY PLACED A BUY ORDER')
+		tg.sendMessage('bot-logic.py **** SUCESSFULLY PLACED A BUY ORDER')
 	else:
 		print ('Not enough balance. Need ' + str(latest_ask_rate * volume_to_spend))
 
@@ -87,6 +89,7 @@ def place_sell_order():
 		# already_placed_buy_order_without_sell = 0
 		checkFor = -1
 		print ('SUCESSFULLY PLACED A SELL ORDER')
+		tg.sendMessage('bot-logic.py **** SUCESSFULLY PLACED A SELL ORDER')
 	else:
 		print ('Not enough balance. Need 0.022 BTC')
 
