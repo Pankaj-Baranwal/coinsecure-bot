@@ -42,11 +42,14 @@ print ('Initialization complete!')
 def place_ask_order():
 	# if already_placed_buy_order_without_sell == 1:
 	# 	volume_to_spend = 0.011
+	global count_trades
+	global checkFor
+	global list_of_peaks
 	inr_balance = cs.getUserINRBalance()
 	if inr_balance > latest_ask_rate * volume_to_spend:
-		buy_rate = previous_bid_rate + 250
-		if latest_bid_rate < previous_bid_rate + 250:
-			buy_rate = latest_bid_rate
+		buy_rate = previous_ask_rate + 250
+		if latest_ask_rate < previous_ask_rate + 250:
+			buy_rate = latest_ask_rate
 		while cs.placeNewBuyOrder(_rate = buy_rate , _volume = volume_to_spend) == -1:
 			pass
 		list_of_peaks[-1][2] = 1
@@ -61,6 +64,9 @@ def place_ask_order():
 		print ('Not enough balance. Need ' + str(latest_ask_rate * volume_to_spend))
 
 def place_sell_order():
+	global count_trades
+	global checkFor
+	global list_of_peaks
 	# if have_extra_btc_to_sell == 1:
 	# 	volume_to_spend = 0.011
 	if cs.getUserBTCBalance() >= volume_to_spend:
@@ -113,7 +119,7 @@ while True:
 		# Confirm that we needed a minima (Need to place a buy order)
 		if checkFor == -1:
 			# We will not place a buy order if current rate is too close to max24Hrs
-			divisions = [min24Hrs, min24Hrs + difference_between_extremes/3.0, max24Hrs - difference_between_extremes/3.0, max24Hrs]
+			divisions = [min24Hrs, min24Hrs + difference_between_extremes/4.0, min24Hrs + difference_between_extremes/4.0 + difference_between_extremes/4.0, max24Hrs - difference_between_extremes/4.0, max24Hrs]
 			if np.digitize(previous_ask_rate, divisions) < 3:
 				print ('Ready to buy!')
 				place_ask_order()
@@ -132,8 +138,8 @@ while True:
 		print ('FOUND A MAXIMA')
 		list_of_peaks.append([1, previous_bid_rate, 0])
 		if checkFor == 1:
-			divisions = [min24Hrs, min24Hrs + difference_between_extremes/3.0, max24Hrs - difference_between_extremes/3.0, max24Hrs]
-			if np.digitize(previous_ask_rate, divisions) > 1:
+			divisions = [min24Hrs, min24Hrs + difference_between_extremes/4.0, min24Hrs + difference_between_extremes/4.0 + difference_between_extremes/4.0, max24Hrs - difference_between_extremes/4.0, max24Hrs]
+			if np.digitize(previous_ask_rate, divisions) > 2:
 				print ('Optimal range to sell!')
 				if latest_bid_rate - previous_buy_rate > threshold_for_profit:
 					place_sell_order()
