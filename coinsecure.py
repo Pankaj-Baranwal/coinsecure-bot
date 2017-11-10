@@ -10,6 +10,7 @@ def consumeGETRequests(_endpoint, _extras):
 		print("ERROR")
 		print (e)
 		return -1
+
 	if r.status_code == 200:
 		data = r.json()
 		if data['success']:
@@ -63,36 +64,40 @@ Output: An integer number
 '''
 def getLowestAskRate():
 	data = consumeGETRequests(ENDPOINT_LOWEST_ASK_RATE, dict())
-	if data != -1:
-		return data['rate']/UNIT_RUPEE
-	return data
+	while data == -1:
+		sleep(5)
+		data = consumeGETRequests(ENDPOINT_LOWEST_ASK_RATE, dict())
+	return data['rate']/UNIT_RUPEE
 
 '''
 Output: An integer number
 '''
 def getHighestBidRate():
 	data = consumeGETRequests(ENDPOINT_HIGHEST_BID_RATE, dict())
-	if data != -1:
-		return data['rate']/UNIT_RUPEE
-	return -1
+	while data == -1:
+		sleep(5)
+		data = consumeGETRequests(ENDPOINT_HIGHEST_BID_RATE, dict())
+	return data['rate']/UNIT_RUPEE
 
 '''
 Output: An integer number
 '''
 def getMin24Hrs():
 	data = consumeGETRequests(ENDPOINT_MIN24_HRS, dict())
-	if data != -1:
-		return data['rate']/UNIT_RUPEE
-	return -1
+	while data == -1:
+		sleep(5)
+		data = consumeGETRequests(ENDPOINT_MIN24_HRS, dict())
+	return data['rate']/UNIT_RUPEE
 
 '''
 Output: An integer number
 '''
 def getMax24Hrs():
 	data = consumeGETRequests(ENDPOINT_MAX24_HRS, dict())
-	if data != -1:
-		return data['rate']/UNIT_RUPEE
-	return -1
+	while data == -1:
+		sleep(5)
+		data = consumeGETRequests(ENDPOINT_MAX24_HRS, dict())
+	return data['rate']/UNIT_RUPEE
 
 '''
 Output: JSON Array.
@@ -102,7 +107,11 @@ Sample Output:
 
 '''
 def getPastTrades(_max):
-	return consumeGETRequests(ENDPOINT_PAST_TRADES, {'max': _max})
+	data = consumeGETRequests(ENDPOINT_PAST_TRADES, {'max': _max})
+	while data == -1:
+		sleep(5)
+		data = consumeGETRequests(ENDPOINT_PAST_TRADES, {'max': _max})
+	return data
 	
 
 '''
@@ -110,7 +119,11 @@ BUY ORDERS
 [{u'vol': 9800000, u'rate': 38450000}, {u'vol': 40100000, u'rate': 38490000}, {u'vol': 570500000, u'rate': 38500000}]
 '''    
 def getBidOrders(_max):
-	return consumeGETRequests(ENDPOINT_BID_ORDERS, {'max': _max})
+	data = consumeGETRequests(ENDPOINT_BID_ORDERS, {'max': _max})
+	while data == -1:
+		sleep(5)
+		data = consumeGETRequests(ENDPOINT_BID_ORDERS, {'max': _max})
+	return data
 
 '''
 SELL ORDERS
@@ -118,37 +131,51 @@ SELL ORDERS
 
 '''    
 def getAskOrders(_max):
-	return consumeGETRequests(ENDPOINT_ASK_ORDERS, {'max': _max})
+	data = consumeGETRequests(ENDPOINT_ASK_ORDERS, {'max': _max})
+	while data == -1:
+		sleep(5)
+		data = consumeGETRequests(ENDPOINT_ASK_ORDERS, {'max': _max})
+	return data
 
 def placeNewSellOrder(_rate, _volume):
 	data = modifyUserData(ENDPOINT_PLACE_NEW_SELL_ORDER, {"rate" : int(_rate * UNIT_RUPEE), "vol" : int(_volume * UNIT_BTC)})
 	if data != -1:
 		return 1
-	return data
+	return -1
 
 def placeNewBuyOrder(_rate, _volume):
 	data = modifyUserData(ENDPOINT_PLACE_NEW_BUY_ORDER, {"rate" : int(_rate * UNIT_RUPEE), "vol" : int(_volume * UNIT_BTC)})
 	if data != -1:
 		return 1
-	return data
+	return -1
 
 def getExistingBuyOrders(_max):
-	return consumeUserGETRequests(ENDPOINT_USER_PENDING_BUY_ORDERS, {'max': _max})
+	data = consumeUserGETRequests(ENDPOINT_USER_PENDING_BUY_ORDERS, {'max': _max})
+	while data == -1:
+		sleep(5)
+		data = consumeUserGETRequests(ENDPOINT_USER_PENDING_BUY_ORDERS, {'max': _max})
+	return data
 
 def getExistingSellOrders(_max):
-	return consumeUserGETRequests(ENDPOINT_USER_PENDING_SELL_ORDERS, {'max': _max})
+	data = consumeUserGETRequests(ENDPOINT_USER_PENDING_SELL_ORDERS, {'max': _max})
+	while data == -1:
+		sleep(5)
+		data = consumeUserGETRequests(ENDPOINT_USER_PENDING_SELL_ORDERS, {'max': _max})
+	return data
 
 def getUserINRBalance():
 	data = consumeUserGETRequests(ENDPOINT_USER_INR_BALANCE, dict())
-	if data != -1:
-		return data['rate']/UNIT_RUPEE
-	return -1
+	while data == -1:
+		sleep(5)
+		data = consumeUserGETRequests(ENDPOINT_USER_INR_BALANCE, dict())
+	return data['rate']/UNIT_RUPEE
 
 def getUserBTCBalance():
 	data = consumeUserGETRequests(ENDPOINT_USER_BTC_BALANCE, dict())
-	if data != -1:
-		return data['vol']/UNIT_BTC
-	return -1
+	while data == -1:
+		sleep(5)
+		data = consumeUserGETRequests(ENDPOINT_USER_BTC_BALANCE, dict())
+	return data['vol']/UNIT_BTC
 
 # print(getLowestAskRate())
 # print(getHighestBidRate())
@@ -162,4 +189,4 @@ def getUserBTCBalance():
 # print (getExistingBuyOrders(_max = 1))
 # print (getExistingSellOrders(_max = 1))
 # print (getUserINRBalance())
-# print (getUserBTCBalance(_endpoint = "/user/exchange/bank/coin/balance/available"))
+# print (getUserBTCBalance())
