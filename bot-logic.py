@@ -30,8 +30,8 @@ previous_bid_rate = cs.getBidOrders(_max = 1)[0]['rate']*0.01
 # previous_bid_rate = pastTrades[row.index('bid')]['rate']/cs.UNIT_RUPEE
 
 list_of_peaks = [] #Stores previously encountered maximas and minimas
-threshold_for_stability = 300 # Minimum recognizable difference between two consecutive trades
-volume_to_spend = 0.018 # Amount of BTC to spend in one transaction
+threshold_for_stability = 600 # Minimum recognizable difference between two consecutive trades
+volume_to_spend = 0.022 # Amount of BTC to spend in one transaction
 count_trades = 0 # How many trades has bot successfully done
 checkFor = int(sys.argv[1]) # -1 if we need minima next, 1 if we need a maxima next
 if checkFor == 1:
@@ -39,7 +39,7 @@ if checkFor == 1:
 else:
 	previous_buy_rate = 0 # previous rate at which we placed a buy order
 print ('Initial need = ' + str(checkFor))
-threshold_for_profit = 3200 # Minimum difference between buy and corresponding sell
+threshold_for_profit = 6000 # Minimum difference between buy and corresponding sell
 counter = 0 # Number of iterations
 
 print ('Initialization complete!')
@@ -110,17 +110,18 @@ while True:
 		print ('Need a MINIMA')
 	else:
 		print ('Need a MAXIMA')
-	print('Latest ask rate: ' + str(latest_ask_rate))
-	print('Previous ask rate: ' + str(previous_ask_rate))
-	print ('PREVIOUS SLOPE FOR ASK: ' + str(previous_slope_for_ask_orders))
-	print ('')
-	print('Latest bid rate: ' + str(latest_bid_rate))
-	print('previous bid rate: ' + str(previous_bid_rate))
-	print ('PREVIOUS SLOPE FOR BID: ' + str(previous_slope_for_bid_orders))
-	print('')
 
 	difference_in_ask_rates = latest_ask_rate - previous_ask_rate
 	difference_in_bid_rates = previous_bid_rate - latest_bid_rate
+	if (previous_slope_for_ask_orders == -1 and difference_in_ask_rates > threshold_for_stability) or (previous_slope_for_bid_orders == 1 and difference_in_bid_rates > threshold_for_stability):
+		print('Latest ask rate: ' + str(latest_ask_rate))
+		print('Previous ask rate: ' + str(previous_ask_rate))
+		print ('PREVIOUS SLOPE FOR ASK: ' + str(previous_slope_for_ask_orders))
+		print ('')
+		print('Latest bid rate: ' + str(latest_bid_rate))
+		print('previous bid rate: ' + str(previous_bid_rate))
+		print ('PREVIOUS SLOPE FOR BID: ' + str(previous_slope_for_bid_orders))
+		print('')
 	# Check if we have a minima
 	if previous_slope_for_ask_orders == -1 and difference_in_ask_rates > threshold_for_stability:
 		# Add the new minima to list
@@ -131,7 +132,7 @@ while True:
 		if checkFor == -1:
 			# We will not place a buy order if current rate is too close to max24Hrs
 			divisions = [min24Hrs, min24Hrs + difference_between_extremes/4.0, min24Hrs + difference_between_extremes/4.0 + difference_between_extremes/4.0, max24Hrs - difference_between_extremes/4.0, max24Hrs]
-			if np.digitize(previous_ask_rate, divisions) < 3:
+			if np.digitize(previous_ask_rate, divisions) < 4:
 				print ('Ready to buy!')
 				place_ask_order()
 			else:
@@ -150,7 +151,7 @@ while True:
 		list_of_peaks.append([1, previous_bid_rate, 0])
 		if checkFor == 1:
 			divisions = [min24Hrs, min24Hrs + difference_between_extremes/4.0, min24Hrs + difference_between_extremes/4.0 + difference_between_extremes/4.0, max24Hrs - difference_between_extremes/4.0, max24Hrs]
-			if np.digitize(previous_ask_rate, divisions) > 2:
+			if np.digitize(previous_ask_rate, divisions) > 1:
 				print ('Optimal range to sell!')
 				if latest_bid_rate - previous_buy_rate > threshold_for_profit:
 					place_sell_order()
