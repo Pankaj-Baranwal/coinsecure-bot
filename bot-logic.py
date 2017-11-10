@@ -20,23 +20,26 @@ n = 10
 pastTrades = cs.getPastTrades(_max = n)
 row = [a['ordType'] for a in pastTrades]
 # Loop until we have at least one bid and ask trades
-while 'ask' not in row or 'bid' not in row:
+while 'bid' not in row:
 	n = n + 10
 	pastTrades = cs.getPastTrades(_max = n)
 	row = [a['ordType'] for a in pastTrades]
-previous_ask_rate = pastTrades[row.index('ask')]['rate']/cs.UNIT_RUPEE
-previous_bid_rate = pastTrades[row.index('bid')]['rate']/cs.UNIT_RUPEE
+previous_ask_rate = pastTrades[row.index('bid')]['rate']/cs.UNIT_RUPEE
+previous_bid_rate = cs.getBidOrders(_max = 1)
+previous_bid_rate = cs.getBidOrders(_max = 1)[0]['rate']*0.01
+# previous_bid_rate = pastTrades[row.index('bid')]['rate']/cs.UNIT_RUPEE
 
 list_of_peaks = [] #Stores previously encountered maximas and minimas
 threshold_for_stability = 300 # Minimum recognizable difference between two consecutive trades
-volume_to_spend = 0.022 # Amount of BTC to spend in one transaction
+volume_to_spend = 0.018 # Amount of BTC to spend in one transaction
 count_trades = 0 # How many trades has bot successfully done
 checkFor = sys.argv[1] # -1 if we need minima next, 1 if we need a maxima next
+print (checkFor)
 if checkFor == 1:
 	previous_buy_rate = sys.argv[2] # previous rate at which we placed a buy order
 else:
 	previous_buy_rate = 0 # previous rate at which we placed a buy order
-threshold_for_profit = 3500 # Minimum difference between buy and corresponding sell
+threshold_for_profit = 3200 # Minimum difference between buy and corresponding sell
 counter = 0 # Number of iterations
 
 print ('Initialization complete!')
@@ -92,16 +95,21 @@ while True:
 	n = 10
 	pastTrades = cs.getPastTrades(_max = n)
 	row = [a['ordType'] for a in pastTrades]
-	while 'ask' not in row or 'bid' not in row:
+	while 'bid' not in row:
 		n = n + 10
 		pastTrades = cs.getPastTrades(_max = n)
 		row = [a['ordType'] for a in pastTrades]
-	latest_ask_rate = pastTrades[row.index('ask')]['rate']/cs.UNIT_RUPEE
-	latest_bid_rate = pastTrades[row.index('bid')]['rate']/cs.UNIT_RUPEE
+	latest_ask_rate = pastTrades[row.index('bid')]['rate']/cs.UNIT_RUPEE
+	latest_bid_rate = cs.getBidOrders(_max = 1)
+	latest_bid_rate = latest_bid_rate[0]['rate']*0.01
 	
 	print('Iteration Number #' + str(counter))
 	counter = counter + 1
 	print ('')
+	if checkFor == -1:
+		print ('Need a MINIMA')
+	else:
+		print ('Need a MAXIMA')
 	print('Latest ask rate: ' + str(latest_ask_rate))
 	print('Previous ask rate: ' + str(previous_ask_rate))
 	print ('PREVIOUS SLOPE FOR ASK: ' + str(previous_slope_for_ask_orders))
