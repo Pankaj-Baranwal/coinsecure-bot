@@ -1,4 +1,5 @@
 import coinsecure as cs
+import collections
 import datetime
 from time import sleep
 import sys
@@ -41,6 +42,7 @@ else:
 	previous_buy_rate = 0 # previous rate at which we placed a buy order
 print ('Initial need = ' + str(checkFor))
 threshold_for_profit = 3500 # Minimum difference between buy and corresponding sell
+threshold_difference_between_consecutive_maximas = 3500 - 500
 counter = 0 # Number of iterations
 
 print ('Initialization complete!')
@@ -139,7 +141,7 @@ while True:
 			frequency = frequency.values()
 			if len(frequency) == 2 and frequency[0] + frequency[1] > 5:
 				if list_of_peaks[-2] - list_of_peaks[-1] < threshold_for_profit:
-					if list_of_peaks[-2] - list_of_peaks[-4] > threshold_difference_between consecutive_maximas:
+					if list_of_peaks[-2] - list_of_peaks[-4] > threshold_difference_between_consecutive_maximas:
 						print ('Ready to buy!')
 						place_ask_order()
 					else:
@@ -149,7 +151,7 @@ while True:
 					place_ask_order()
 			else:
 				# We will not place a buy order if current rate is too close to max24Hrs
-	                        divisions = [min24Hrs, min24Hrs + difference_between_extremes/4.0, min24Hrs + difference_between_extremes/4.0 + differen$
+                                divisions = [min24Hrs, min24Hrs + difference_between_extremes/4.0, min24Hrs + difference_between_extremes/4.0 + difference_between_extremes/4.0, max24Hrs - difference_between_extremes/4.0, max24Hrs]
         	                if np.digitize(previous_ask_rate, divisions) < 4:
 					print ('Ready to buy!')
 					place_ask_order()
