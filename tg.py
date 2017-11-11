@@ -1,7 +1,8 @@
 from API import BOT_TOKEN # contains BOT_TOKEN
 import telegram as tgram # pip install telegram-send
 
-CHAT_ID = -195455600 # chat id for the BTC telegram group
+#CHAT_ID = -195455600 # chat id for the BTC telegram group
+CHAT_ID = -1001321402393
 
 bot = tgram.Bot(token=BOT_TOKEN)
 
