@@ -25,12 +25,12 @@ while True:
 	print ('previous bid rate = ' + str(previous_bid_rate))
 	if previous_ask_rate - current_ask_rate > 5000:
 		print('BOT SENDING MESSAGE')
+		tg.sendMessage('GOOD TIME TO BUY! PRICES = ' + str(current_ask_rate) + " BEFORE: " + str(previous_ask_rate))
 		previous_ask_rate = current_ask_rate
-		tg.sendMessage('GOOD TIME TO BUY! PRICES = ' + str(current_ask_rate))
 	if current_bid_rate - previous_bid_rate > 5000:
 		print('BOT SENDING MESSAGE')
 		previous_bid_rate = current_bid_rate
-		tg.sendMessage('GOOD TIME TO SELL! PRICES = ' + str(current_bid_rate))
+		tg.sendMessage('GOOD TIME TO SELL! PRICES = ' + str(current_bid_rate)  + " BEFORE: " + str(previous_bid_rate))
 	print ('')
 	print ('----x----x----')
 	print ('')
