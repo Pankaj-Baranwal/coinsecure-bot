@@ -36,11 +36,11 @@ volume_to_spend = 0.022 # Amount of BTC to spend in one transaction
 count_trades = 0 # How many trades has bot successfully done
 checkFor = int(sys.argv[1]) # -1 if we need minima next, 1 if we need a maxima next
 if checkFor == 1:
-	previous_buy_rate = sys.argv[2] # previous rate at which we placed a buy order
+	previous_buy_rate = int(sys.argv[2]) # previous rate at which we placed a buy order
 else:
 	previous_buy_rate = 0 # previous rate at which we placed a buy order
 print ('Initial need = ' + str(checkFor))
-threshold_for_profit = 6000 # Minimum difference between buy and corresponding sell
+threshold_for_profit = 3500 # Minimum difference between buy and corresponding sell
 counter = 0 # Number of iterations
 
 print ('Initialization complete!')
@@ -116,15 +116,14 @@ while True:
 
 	difference_in_ask_rates = latest_ask_rate - previous_ask_rate
 	difference_in_bid_rates = previous_bid_rate - latest_bid_rate
-	if (previous_slope_for_ask_orders == -1 and difference_in_ask_rates > threshold_for_stability) or (previous_slope_for_bid_orders == 1 and difference_in_bid_rates > threshold_for_stability):
-		print('Latest ask rate: ' + str(latest_ask_rate))
-		print('Previous ask rate: ' + str(previous_ask_rate))
-		print ('PREVIOUS SLOPE FOR ASK: ' + str(previous_slope_for_ask_orders))
-		print ('')
-		print('Latest bid rate: ' + str(latest_bid_rate))
-		print('previous bid rate: ' + str(previous_bid_rate))
-		print ('PREVIOUS SLOPE FOR BID: ' + str(previous_slope_for_bid_orders))
-		print('')
+	print('Latest ask rate: ' + str(latest_ask_rate))
+	print('Previous ask rate: ' + str(previous_ask_rate))
+	print ('PREVIOUS SLOPE FOR ASK: ' + str(previous_slope_for_ask_orders))
+	print ('')
+	print('Latest bid rate: ' + str(latest_bid_rate))
+	print('previous bid rate: ' + str(previous_bid_rate))
+	print ('PREVIOUS SLOPE FOR BID: ' + str(previous_slope_for_bid_orders))
+	print('')
 	# Check if we have a minima
 	if previous_slope_for_ask_orders == -1 and difference_in_ask_rates > threshold_for_stability:
 		# Add the new minima to list
@@ -134,12 +133,28 @@ while True:
 		# Confirm that we needed a minima (Need to place a buy order)
 		if checkFor == -1:
 			# We will not place a buy order if current rate is too close to max24Hrs
-			divisions = [min24Hrs, min24Hrs + difference_between_extremes/4.0, min24Hrs + difference_between_extremes/4.0 + difference_between_extremes/4.0, max24Hrs - difference_between_extremes/4.0, max24Hrs]
-			if np.digitize(previous_ask_rate, divisions) < 4:
-				print ('Ready to buy!')
-				place_ask_order()
+			#divisions = [min24Hrs, min24Hrs + difference_between_extremes/4.0, min24Hrs + difference_between_extremes/4.0 + difference_between_extremes/4.0, max24Hrs - difference_between_extremes/4.0, max24Hrs]
+			#if np.digitize(previous_ask_rate, divisions) < 4:
+			frequency = collections.Counter([row[0] for row in list_of_peaks])
+			frequency = frequency.values()
+			if len(frequency) == 2 and frequency[0] + frequency[1] > 5:
+				if list_of_peaks[-2] - list_of_peaks[-1] < threshold_for_profit:
+					if list_of_peaks[-2] - list_of_peaks[-4] > threshold_difference_between consecutive_maximas:
+						print ('Ready to buy!')
+						place_ask_order()
+					else:
+						print ('Too close to top of the curves to place an order')
+				else:
+					print ('Ready to buy!')
+					place_ask_order()
 			else:
-				print ('Danger Zone! Not the right range to buy in!')
+				# We will not place a buy order if current rate is too close to max24Hrs
+	                        divisions = [min24Hrs, min24Hrs + difference_between_extremes/4.0, min24Hrs + difference_between_extremes/4.0 + differen$
+        	                if np.digitize(previous_ask_rate, divisions) < 4:
+					print ('Ready to buy!')
+					place_ask_order()
+				else:
+					print ('In Danger Zone!')
 		else:
 			print ('Expecting a maxima, got minima')
 
@@ -153,16 +168,10 @@ while True:
 		print ('FOUND A MAXIMA')
 		list_of_peaks.append([1, previous_bid_rate, 0])
 		if checkFor == 1:
-			divisions = [min24Hrs, min24Hrs + difference_between_extremes/4.0, min24Hrs + difference_between_extremes/4.0 + difference_between_extremes/4.0, max24Hrs - difference_between_extremes/4.0, max24Hrs]
-			if np.digitize(previous_ask_rate, divisions) > 1:
-				print ('Optimal range to sell!')
-				if latest_bid_rate - previous_buy_rate > threshold_for_profit:
-					place_sell_order()
-				else:
-					print('But Not enough margin since last buy. :/')
-
+			if latest_bid_rate - previous_buy_rate > threshold_for_profit:
+				place_sell_order()
 			else:
-				print ('Danger Zone! Not the right range to sell in!')
+				print('But Not enough margin since last buy. :/')
 		else:
 			print ('Expecting a minima, got maxima')
 	if difference_in_bid_rates > threshold_for_stability:
