@@ -56,8 +56,8 @@ def place_ask_order():
 	global list_of_peaks
 	inr_balance = cs.getUserINRBalance()
 	if inr_balance > latest_ask_rate * volume_to_spend:
-		buy_rate = previous_ask_rate + 250
-		if latest_ask_rate < previous_ask_rate + 250:
+		buy_rate = previous_ask_rate - 250
+		if latest_ask_rate < previous_ask_rate - 250:
 			buy_rate = latest_ask_rate
 		while cs.placeNewBuyOrder(_rate = buy_rate , _volume = volume_to_spend) == -1:
 			pass
@@ -80,8 +80,8 @@ def place_sell_order():
 	# if have_extra_btc_to_sell == 1:
 	# 	volume_to_spend = 0.011
 	if cs.getUserBTCBalance() >= volume_to_spend:
-		sell_rate = previous_bid_rate - 250
-		if latest_bid_rate > previous_bid_rate - 250:
+		sell_rate = previous_bid_rate
+		if latest_bid_rate > previous_bid_rate:
 			sell_rate = latest_bid_rate
 		while cs.placeNewSellOrder(rate = sell_rate, _volume = volume_to_spend) == -1:
 			pass
