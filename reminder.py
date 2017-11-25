@@ -9,7 +9,9 @@ import tg
 previous_ask_rate = cs.getLowestAskRate()
 # HIGHEST AT WHICH PEOPLE WILLING TO BUY
 previous_bid_rate = cs.getHighestBidRate()
-bins = [440000.0, 445000.0, 450000.0, 455000.0, 460000.0, 465000.0, 470000.0, 475000.0, 480000.0, 485000.0, 490000.0, 495000.0]
+bins = []
+for i in range(100):
+	bins.append(400000+(i*5000))
 previous_ask_bin = np.digitize([previous_ask_rate], bins)
 previous_bid_bin = np.digitize([previous_bid_rate], bins)
 counter = 0
