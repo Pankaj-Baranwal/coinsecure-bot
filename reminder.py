@@ -28,6 +28,10 @@ while True:
 	print ('previous bid rate = ' + str(previous_bid_rate))
 	current_ask_bin = np.digitize([current_ask_rate], bins)
 	current_bid_bin = np.digitize([current_bid_rate], bins)
+	print ('Current ask BIN = ' + str(current_ask_bin))
+	print ('Current bid BIN = ' + str(current_bid_bin))
+	print ('Previous ask BIN = ' + str(previous_ask_bin))
+	print ('Previous bid BIN = ' + str(previous_bid_bin))
 
 	if previous_ask_bin != current_ask_bin:
 		print('BOT SENDING MESSAGE')
